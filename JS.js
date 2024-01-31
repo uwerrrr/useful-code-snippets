@@ -125,3 +125,46 @@ class RomanNumerals {
     return result;
   }
 }
+
+/// convert array of integers to ordered string list in range
+// e.g.
+// solution([-10, -9, -8, -6, -3, -2, -1, 0, 1, 3, 4, 5, 7, 8, 9, 10, 11, 14, 15, 17, 18, 19, 20]);
+// returns "-10--8,-6,-3-1,3-5,7-11,14,15,17-20"
+const solution = (list) => {
+  list.sort((a, b) => a - b); // sort list arr
+
+  let curRange = "";
+  let rangeStart;
+  let rangeEnd;
+
+  const result = list.reduce((acc, curr, arrIndex, arr) => {
+    if (curr <= rangeEnd) {
+      // skip if curr <= rangeEnd
+      acc = acc;
+    } else if (
+      // if in range
+      arr[arrIndex + 1] === curr + 1 &&
+      arr[arrIndex + 2] === curr + 2
+    ) {
+      rangeStart = curr;
+      rangeEnd = curr + 2;
+
+      for (let i = arrIndex + 2; i < arr.length; i++) {
+        if (arr[i + 1] === rangeEnd + 1) {
+          rangeEnd = arr[i + 1];
+        }
+      }
+
+      curRange = `${rangeStart}-${rangeEnd}`;
+      acc = curr === arr[0] ? curRange : acc + "," + curRange;
+    } else {
+      // if no range
+
+      acc = curr === arr[0] ? `${curr}` : acc + "," + `${curr}`;
+    }
+
+    return acc;
+  }, "");
+
+  return result;
+};
