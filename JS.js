@@ -168,3 +168,20 @@ const solution = (list) => {
 
   return result;
 };
+
+/// Move the first letter of each word to the end of it, then add "ay" to the end of the word. Leave punctuation marks untouched.
+// e.g.
+// pigIt('Pig latin is cool'); // igPay atinlay siay oolcay
+// pigIt('Hello world !');     // elloHay orldway !
+const pigIt = (str) => {
+  const lettersRegex = /^[a-zA-Z]+$/;
+  const strArr = str.split(" ").map((word) => {
+    if (lettersRegex.test(word)) {
+      const firstLetter = word[0];
+      const flippedWord = word.slice(1, word.length) + firstLetter + "ay";
+      return flippedWord;
+    }
+    return word;
+  });
+  return strArr.join(" ");
+};
