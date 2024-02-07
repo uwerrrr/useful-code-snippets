@@ -185,3 +185,54 @@ const pigIt = (str) => {
   });
   return strArr.join(" ");
 };
+
+/// PaginationHelper class
+/* var helper = new PaginationHelper(['a','b','c','d','e','f'], 4);
+helper.pageCount(); // should == 2
+helper.itemCount(); // should == 6
+helper.pageItemCount(0); // should == 4
+helper.pageIndex(5); // should == 1 (zero based index)
+*/
+class PaginationHelper {
+  constructor(collection = [], itemsPerPage = 0) {
+    // The constructor takes in an array of items and a integer indicating how many
+    // items fit within a single page
+    this.collection = collection;
+    this.itemsPerPage = itemsPerPage;
+    this.itemCount = this.collection.length;
+    this.pageCount = Math.ceil(this.collection.length / this.itemsPerPage);
+    this.pages = [];
+    for (let i = 0; i < this.pageCount; i++) {
+      this.pages[i] = [];
+      for (let j = 0; j < this.itemsPerPage; j++) {
+        let index = i * this.itemsPerPage + j;
+        if (index < this.itemCounts) {
+          this.pages[i][j] = collection[j + this.itemsPerPage * i];
+        }
+      }
+    }
+  }
+  getItemCount() {
+    // returns the number of items within the entire collection
+    return this.itemCount;
+  }
+  getPageCount() {
+    // returns the number of pages
+    return this.pageCount;
+  }
+  getPageItemCount(pageIndex) {
+    // returns the number of items on the current page. page_index is zero based.
+    // this method should return -1 for pageIndex values that are out of range
+    return this.pages[pageIndex] ? this.pages[pageIndex].length : -1;
+  }
+  getPageIndex(itemIndex) {
+    // determines what page an item is on. Zero based indexes
+    // this method should return -1 for itemIndex values that are out of range
+    const pageIndex = Math.floor(itemIndex / this.itemsPerPage);
+    return pageIndex < this.pageCounts &&
+      pageIndex >= 0 &&
+      itemIndex < this.itemCounts
+      ? pageIndex
+      : -1;
+  }
+}
