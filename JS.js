@@ -236,3 +236,18 @@ class PaginationHelper {
       : -1;
   }
 }
+
+//** FUNCTION CHAINING **/
+/* a function that will add numbers together when called in succession.
+add(1)(2); // == 3 */
+const add = (n) => {
+  const adder = (x) => {
+    return add(n + x);
+  };
+
+  adder.valueOf = () => {
+    return n;
+  };
+
+  return adder;
+};
