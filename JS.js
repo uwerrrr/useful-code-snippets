@@ -242,7 +242,8 @@ class PaginationHelper {
 add(1)(2); // == 3 */
 const add = (n) => {
   const adder = (x) => {
-    return add(n + x);
+    let sum = n + x;
+    return add(sum);
   };
 
   adder.valueOf = () => {
