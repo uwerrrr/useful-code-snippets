@@ -252,3 +252,63 @@ const add = (n) => {
 
   return adder;
 };
+
+//** Container of integers **/
+/**
+ * A container of integers that should support
+ * addition, removal, and search for the median integer
+ */
+class Container {
+  constructor() {
+    this.numbers = [];
+  }
+
+  add(value) {
+    this.numbers.push(value);
+  }
+
+  /**
+   * Attempts to delete one item of the specified value from the container
+   *
+   * @param {number} value
+   * @return {boolean} true, if the value has been deleted, or
+   *                   false, otherwise.
+   */
+  delete(value) {
+    // filter method
+    // this.numbers = this.numbers.filter((number) => number !== value)
+
+    // slice method
+    let index = this.numbers.indexOf(value);
+    if (index > -1) {
+      this.numbers.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Finds the container's median integer value, which is
+   * the middle integer when the all integers are sorted in order.
+   * If the sorted array has an even length,
+   * the leftmost integer between the two middle
+   * integers should be considered as the median.
+   *
+   * @return {number} the median if the array is not empty, or
+   * @throws {Error} a runtime exception, otherwise.
+   */
+  getMedian() {
+    this.numbers.sort((a, b) => a - b);
+    let medianIndex = 0;
+    if (this.numbers.length <= 0) {
+      throw Error();
+    }
+    if (this.numbers.length % 2 == 0) {
+      medianIndex = this.numbers.length / 2 - 1;
+    } else {
+      medianIndex = Math.floor(this.numbers.length / 2);
+    }
+
+    return this.numbers[medianIndex];
+  }
+}
