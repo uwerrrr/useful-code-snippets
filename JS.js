@@ -312,3 +312,173 @@ class Container {
     return this.numbers[medianIndex];
   }
 }
+
+/* HASHING password and authorization */
+
+function authEvents(events) {
+  const p = 131;
+  const m = 10 ** 9 + 7;
+
+  let allChars = [];
+  for (let i = 48; i < 122; i++) {
+    allChars.push(String.fromCharCode(i));
+  }
+
+  const ascii = (char) => {
+    return char.charCodeAt(0);
+  };
+
+  const partialHash = (string) => {
+    let result = 0;
+    let asciiChars = string.split("").map((char) => {
+      return ascii(char);
+    });
+    let charLen = asciiChars.length;
+
+    result = asciiChars.reduce((acc, curr, index) => {
+      acc += curr * p ** (charLen - (index + 1));
+
+      return acc;
+    }, 0);
+    return result;
+  };
+
+  const hash = (partialHash) => {
+    return partialHash % m;
+  };
+
+  let currPass = "";
+
+  let currPartialHash;
+  let currHash;
+
+  let hashToCheck = 0;
+
+  let result = [];
+
+  for (let i = 0; i < events.length; i++) {
+    const element = events[i];
+    if (typeof element === "number") {
+      continue;
+    } else {
+      if (element[0] === "setPassword") {
+        currPass = element[1];
+        currPartialHash = partialHash(currPass);
+        currHash = hash(currPartialHash);
+      } else {
+        hashToCheck = Number(element[1]);
+        if (currHash === hashToCheck) {
+          result.push(1);
+        } else {
+          let found = false;
+          for (let j = 0; j < allChars.length; j++) {
+            let appendedHash = hash(currPartialHash * p + ascii(allChars[j]));
+
+            if (appendedHash === hashToCheck) {
+              found = true;
+              break;
+            }
+          }
+          result.push(found ? 1 : 0);
+        }
+      }
+    }
+  }
+
+  return result;
+}
+
+/* Given an array of numbers and a target sum
+Count how many distinct pair of numbers that make up the target sum
+e.g. array = [5,7,9,13,11,6,6,3,3] / target = 12 
+==> count = 3 => 3 distinct pairs: (5,7); (3,9) ; (6, 6)
+*/
+
+///========= Option 1: double loops - easy to read
+// function stockPairs(stocksProfit, target) {
+//     let count = 0;
+//     let totalStock = stocksProfit.length;
+//     console.log(totalStock);
+//     let checkedStocksI = new Set();
+//     stocksProfit = stocksProfit.sort((a, b) => a - b);
+
+//     for (let i = 0; i < totalStock; i++) {
+//         let currentStock = stocksProfit[i];
+//         let checkedStocksJ =  new Set();
+//         if (checkedStocksI.has(currentStock)){
+//                 continue
+//             }
+//         for( let j = i + 1; j < totalStock; j++) {
+//             let nextStock = stocksProfit[j];
+
+//             if (checkedStocksJ.has(nextStock)){
+//                     continue
+//                 }
+//             let sum = currentStock + nextStock
+//             if (sum === target) {
+//                 // console.log(`${sum} = ${currentStock} + ${nextStock}`)
+//                 count += 1;
+//             }
+//             checkedStocksJ.add(nextStock);
+//         }
+//         checkedStocksI.add(currentStock);
+//     }
+//     return count;
+// }
+
+///========= Option 2: occurrence mapping
+// function stockPairs(stocksProfit, target) {
+//     stocksProfit = stocksProfit.sort((a, b) => a - b);
+//     let count = 0;
+//     let profitOccurMap = new Map();
+//     let countedPairs = new Set();
+
+//     for (let i = 0; i < stocksProfit.length; i++) {
+//         let currentProfit = stocksProfit[i];
+//         let diff = target-currentProfit;
+
+//         if (profitOccurMap.has(diff) && !countedPairs.has(diff) && !countedPairs.has(currentProfit)){
+//             count += 1
+//             countedPairs.add(diff)
+//             countedPairs.add(currentProfit)
+//         }
+
+//         if (!profitOccurMap.has(currentProfit)){
+//             profitOccurMap.set(currentProfit, 0);
+//         }
+
+//         profitOccurMap.set(currentProfit, profitOccurMap.get(currentProfit) + 1);
+//     }
+
+//     return count;
+// }
+
+///========= Option 3: only use Set()
+function stockPairs(stocksProfit, target) {
+  stocksProfit = stocksProfit.sort((a, b) => a - b);
+  let count = 0;
+  let profitSet = new Set();
+  console.log(profitSet);
+  let countedPairs = new Set();
+
+  for (let i = 0; i < stocksProfit.length; i++) {
+    let currentProfit = stocksProfit[i];
+    let diff = target - currentProfit;
+
+    if (
+      profitSet.has(diff) &&
+      !countedPairs.has(diff) &&
+      !countedPairs.has(currentProfit)
+    ) {
+      count += 1;
+      countedPairs.add(diff);
+      countedPairs.add(currentProfit);
+    }
+
+    if (!profitSet.has(currentProfit)) {
+      profitSet.add(currentProfit);
+    }
+  }
+
+  return count;
+}
